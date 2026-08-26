@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>مولد QR Code احترافي</title>
+
+https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",Tahoma,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+    linear-gradient(
+    135deg,
+    #0f172a,
+    #1e293b,
+    #334155
+    );
+    padding:20px;
+}
+
+.card{
+    width:100%;
+    max-width:520px;
+    background:white;
+    padding:30px;
+    border-radius:25px;
+    box-shadow:
+    0 20px 50px rgba(0,0,0,.18);
+}
+
+.title{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.title h1{
+    color:#0f172a;
+    font-size:30px;
+}
+
+.title p{
+    color:#64748b;
+    margin-top:8px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    color:#334155;
+    font-weight:600;
+}
+
+input[type=text]{
+    width:100%;
+    padding:14px;
+    border:2px solid #e2e8f0;
+    border-radius:14px;
+    outline:none;
+    margin-bottom:18px;
+    transition:.3s;
+}
+
+input[type=text]:focus{
+    border-color:#2563eb;
+}
+
+input[type=file]{
+    width:100%;
+    padding:12px;
+    border:2px dashed #cbd5e1;
+    border-radius:14px;
+    margin-bottom:20px;
+}
+
+#qrContainer{
+    display:flex;
+    justify-content:center;
+    margin:25px 0;
+}
+
+.buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+button{
+    border:none;
+    border-radius:14px;
+    padding:14px;
+    color:#fff;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:bold;
+    transition:.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+.png-btn{
+    background:#2563eb;
+}
+
+.svg-btn{
+    background:#16a34a;
+}
+
+.footer{
+    text-align:center;
+    margin-top:18px;
+    color:#64748b;
+    font-size:13px;
+}
+
+@media(max-width:550px){
+
+.buttons{
+    grid-template-columns:1fr;
+}
+
+.card{
+    padding:20px;
+}
+
+.title h1{
+    font-size:24px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="title">
+<h1>إنشاء رمز QR</h1>
+<p>اكتب النص أو الرابط وسيتم إنشاء الرمز تلقائياً</p>
+</div>
+
+<label>النص أو الرابط</label>
+
+<input
+type="text"
+id="qrText"
+placeholder="https://example.com"
+/>
+
+<label>إضافة شعار داخل الرمز (اختياري)</label>
+
+<input
+type="file"
+id="logoInput"
+accept="image/*"
+/>
+
+<div id="qrContainer"></div>
+
+<div class="buttons">
+
+<button
+class="png-btn"
+onclick="downloadPNG()">
+تحميل PNG
+</button>
+
+<button
+class="svg-btn"
+onclick="downloadSVG()">
+تحميل SVG
+</button>
+
+</div>
+
+<div class="footer">
+تم تصميم الصفحة لدعم الجوال والطباعة عالية الجودة
+</div>
+
+</div>
+
+<script>
+
+let logoUrl = "";
+
+const qrCode = new QRCodeStyling({
+    width:250,
+    height:250,
+    type:"svg",
+    data:"",
+
+    image:"",
+
+    dotsOptions:{
+        color:"#111827",
+        type:"rounded"
+    },
+
+    backgroundOptions:{
+        color:"#ffffff"
+    },
+
+    cornersSquareOptions:{
+        
