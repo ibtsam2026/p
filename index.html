@@ -1,24 +1,495 @@
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11code.all.min.js
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الطالبات - حاسب آلي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2A1E45;
+    --ink-soft:#6E5F92;
+    --mint:#8FD3C7;
+    --mint-deep:#5AB8A8;
+    --coral:#E14F63;
+    --coral-deep:#C13650;
+    --gold:#E8A33D;
+    --gold-deep:#C97F1E;
+    --paper:#FAF7FB;
+    --card:#FFFFFF;
+    --line:#E8E3F0;
+    --danger:#C13650;
 
-<input type="text" id="barcodeText" placeholder="أدخل النص">
+    --visual:#4C6FFF;
+    --visual-soft:#EBEFFF;
+    --auditory:#E8A33D;
+    --auditory-soft:#FFF3E1;
+    --kinesthetic:#2FAE7C;
+    --kinesthetic-soft:#E5F7EF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    font-family:'Tajawal',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:32px 16px 64px;
+  }
+  .wrap{
+    width:100%;
+    max-width:480px;
+  }
+  .badge{
+    display:inline-block;
+    background:var(--ink);
+    color:#fff;
+    font-size:13px;
+    font-weight:500;
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:16px;
+  }
+  h1{
+    font-size:26px;
+    font-weight:800;
+    margin:0 0 4px;
+    line-height:1.3;
+  }
+  .meta{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin:0 0 28px;
+    line-height:1.8;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:28px 24px;
+    box-shadow:0 1px 2px rgba(31,42,68,0.04);
+  }
+  .field{
+    margin-bottom:22px;
+  }
+  .field:last-of-type{
+    margin-bottom:0;
+  }
+  label{
+    display:block;
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:var(--ink);
+  }
+  label .req{
+    color:var(--coral-deep);
+    margin-right:2px;
+  }
+  input[type="text"], input[type="tel"], select{
+    width:100%;
+    font-family:'Tajawal',sans-serif;
+    font-size:15px;
+    padding:12px 14px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:var(--paper);
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  input[type="text"]:focus, input[type="tel"]:focus, select:focus{
+    border-color:var(--gold);
+  }
+  .phone-row{
+    display:flex;
+    align-items:center;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:var(--paper);
+    overflow:hidden;
+  }
+  .phone-row:focus-within{
+    border-color:var(--gold);
+  }
+  .phone-prefix{
+    padding:12px 14px;
+    font-weight:700;
+    color:var(--ink-soft);
+    border-left:1.5px solid var(--line);
+    background:#EFF2F6;
+    white-space:nowrap;
+  }
+  .phone-row input{
+    border:none;
+    background:transparent;
+    flex:1;
+    direction:ltr;
+    text-align:right;
+    padding:12px 14px;
+  }
+  .phone-row input:focus{
+    border:none;
+  }
+  .hint{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+  .style-grid{
+    display:flex;
+    gap:10px;
+  }
+  .style-option{
+    flex:1;
+    position:relative;
+  }
+  .style-option input{
+    position:absolute;
+    opacity:0;
+    inset:0;
+    cursor:pointer;
+    width:100%;
+    height:100%;
+    margin:0;
+    z-index:2;
+  }
+  .style-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:16px 8px 14px;
+    background:var(--paper);
+    text-align:center;
+    transition:border-color .15s ease, background .15s ease, transform .1s ease;
+  }
+  .style-icon{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#EEF0F5;
+    transition:background .15s ease;
+  }
+  .style-icon svg{
+    width:20px;
+    height:20px;
+    stroke:var(--ink-soft);
+    transition:stroke .15s ease;
+  }
+  .style-label{
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink-soft);
+    transition:color .15s ease;
+  }
+  .style-option.is-visual input:checked ~ .style-card{
+    border-color:var(--visual);
+    background:var(--visual-soft);
+  }
+  .style-option.is-visual input:checked ~ .style-card .style-icon{ background:var(--visual); }
+  .style-option.is-visual input:checked ~ .style-card .style-icon svg{ stroke:#fff; }
+  .style-option.is-visual input:checked ~ .style-card .style-label{ color:var(--visual); font-weight:700; }
 
-<svg id="barcode"></svg>
+  .style-option.is-auditory input:checked ~ .style-card{
+    border-color:var(--auditory);
+    background:var(--auditory-soft);
+  }
+  .style-option.is-auditory input:checked ~ .style-card .style-icon{ background:var(--auditory); }
+  .style-option.is-auditory input:checked ~ .style-card .style-icon svg{ stroke:#fff; }
+  .style-option.is-auditory input:checked ~ .style-card .style-label{ color:var(--auditory-deep,var(--auditory)); font-weight:700; }
+
+  .style-option.is-kinesthetic input:checked ~ .style-card{
+    border-color:var(--kinesthetic);
+    background:var(--kinesthetic-soft);
+  }
+  .style-option.is-kinesthetic input:checked ~ .style-card .style-icon{ background:var(--kinesthetic); }
+  .style-option.is-kinesthetic input:checked ~ .style-card .style-icon svg{ stroke:#fff; }
+  .style-option.is-kinesthetic input:checked ~ .style-card .style-label{ color:var(--kinesthetic); font-weight:700; }
+
+  .style-option input:active ~ .style-card{
+    transform:scale(0.97);
+  }
+  .grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  select{
+    appearance:none;
+    -webkit-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234A5570' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;
+    background-position:left 12px center;
+    padding-left:36px;
+  }
+  .submit-btn{
+    width:100%;
+    margin-top:28px;
+    background:linear-gradient(135deg, var(--coral), var(--coral-deep));
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:15px 16px;
+    font-family:'Tajawal',sans-serif;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    box-shadow:0 6px 16px rgba(193,54,80,0.25);
+    transition:box-shadow .15s ease, transform .1s ease;
+  }
+  .submit-btn:hover{
+    box-shadow:0 8px 20px rgba(193,54,80,0.32);
+  }
+  .submit-btn:active{
+    transform:scale(0.98);
+  }
+  .submit-btn:disabled{
+    background:#C7CCD6;
+    cursor:not-allowed;
+  }
+  .error-msg{
+    color:var(--danger);
+    font-size:13px;
+    margin-top:6px;
+    display:none;
+  }
+  .error-msg.show{
+    display:block;
+  }
+  .field.has-error input,
+  .field.has-error select,
+  .field.has-error .phone-row{
+    border-color:var(--danger);
+  }
+  .status{
+    text-align:center;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:14px;
+    min-height:18px;
+  }
+  footer{
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:24px;
+    opacity:.7;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">تسجيل الفصل</span>
+  <h1>استبيان أسئلة شخصية</h1>
+  <p class="meta">المتوسطة الواحدة والعشرون<br>معلمة المادة: ابتسام الشهري</p>
+
+  <div class="card">
+    <form id="regForm" novalidate>
+
+      <div class="field" id="field-name">
+        <label for="studentName">اسم الطالبة<span class="req">*</span></label>
+        <input type="text" id="studentName" placeholder="اكتبي اسمك الكامل">
+        <div class="error-msg">اكتبي اسم الطالبة</div>
+      </div>
+
+      <div class="field" id="field-style">
+        <label>اختاري نمطك في التعلم<span class="req">*</span></label>
+        <div class="style-grid">
+          <label class="style-option is-visual">
+            <input type="radio" name="style" value="بصري">
+            <span class="style-card">
+              <span class="style-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              </span>
+              <span class="style-label">بصري</span>
+            </span>
+          </label>
+          <label class="style-option is-auditory">
+            <input type="radio" name="style" value="سمعي">
+            <span class="style-card">
+              <span class="style-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4M7 7v10M11 4v16M15 7v10M19 10v4"/></svg>
+              </span>
+              <span class="style-label">سمعي</span>
+            </span>
+          </label>
+          <label class="style-option is-kinesthetic">
+            <input type="radio" name="style" value="حركي">
+            <span class="style-card">
+              <span class="style-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M6 14v0a8 8 0 0 0 16 0v-1a2 2 0 0 0-4 0"/></svg>
+              </span>
+              <span class="style-label">حركي</span>
+            </span>
+          </label>
+        </div>
+        <div class="error-msg">اختاري نمط التعلم</div>
+      </div>
+
+      <div class="field" id="field-phone">
+        <label for="studentPhone">اكتبي رقم جوالك ويبدأ 966<span class="req">*</span></label>
+        <div class="phone-row">
+          <span class="phone-prefix">966+</span>
+          <input type="tel" id="studentPhone" placeholder="5XXXXXXXX" maxlength="9" inputmode="numeric">
+        </div>
+        <div class="hint">أدخلي الرقم بدون صفر في البداية، مثال: 500000000</div>
+        <div class="error-msg">تأكدي من رقم الجوال (9 أرقام بعد 966)</div>
+      </div>
+
+      <div class="field" id="field-grade">
+        <label for="gradeLevel">الصف الدراسي<span class="req">*</span></label>
+        <div class="grid-2">
+          <select id="gradeLevel">
+            <option value="" disabled selected>الصف</option>
+            <option value="أول">أول متوسط</option>
+            <option value="ثاني">ثاني متوسط</option>
+            <option value="ثالث">ثالث متوسط</option>
+          </select>
+          <select id="sectionNum">
+            <option value="" disabled selected>الفصل</option>
+            <option value="أول">أول</option>
+            <option value="ثاني">ثاني</option>
+            <option value="ثالث">ثالث</option>
+          </select>
+        </div>
+        <div class="error-msg">اختاري الصف والفصل</div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        الانضمام لمجموعة الواتساب
+      </button>
+      <div class="status" id="statusMsg"></div>
+    </form>
+  </div>
+  <footer>بياناتك تُستخدم فقط للتواصل الدراسي مع معلمة المادة</footer>
+</div>
 
 <script>
-document.getElementById("barcodeText")
-.addEventListener("input", function () {
+/* ============================================================
+   إعدادات لازم تعبّينها قبل النشر
+   ============================================================ */
 
-    const value = this.value.trim();
+// 1) رابط استقبال ردود نموذج Google Forms
+const FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe02OZWrlLVmnJOrfxZbD6BAqHngs59Vo0wllUOJV0IDZFIUA/formResponse";
 
-    if (!value) return;
+// 2) أكواد الحقول (entry.XXXXXXXX)
+const ENTRY_NAME    = "entry.1353150236";
+const ENTRY_STYLE   = "entry.1698502120";
+const ENTRY_PHONE   = "entry.1460034603";
+const ENTRY_GRADE   = "entry.1506434917";
+const ENTRY_SECTION = "entry.408632204";
 
-    JsBarcode("#barcode", value, {
-        format: "CODE128",
-        lineColor: "#000",
-        width: 2,
-        height: 80,
-        displayValue: true
-    });
+// نص كل صف دراسي كما هو مسجل بالضبط في نموذجك
+const GRADE_LABELS = {
+  "أول": "الأول المتوسط",
+  "ثاني": "الثاني المتوسط",
+  "ثالث": "الثالث المتوسط"
+};
 
+/* ============================================================
+   روابط مجموعات الواتساب التسع (جاهزة)
+   ============================================================ */
+const GROUP_LINKS = {
+  "أول-أول":   "https://chat.whatsapp.com/DCsK59iGq6jJp5fquRiMhy?s=cl&p=i&mlu=4&ilr=4",
+  "أول-ثاني":  "https://chat.whatsapp.com/BP3AEb9gPUH01z2JgSq4wY?s=cl&p=i&mlu=4&ilr=4",
+  "أول-ثالث":  "https://chat.whatsapp.com/JuE0bSXe770JjwjXu5abTh?s=cl&p=i&mlu=4&ilr=4",
+  "ثاني-أول":  "https://chat.whatsapp.com/CLpettccVWZ9ob3BA2RGk5?s=cl&p=i&mlu=4&ilr=4",
+  "ثاني-ثاني": "https://chat.whatsapp.com/JerDw6sACP4DNqQWysiJlR?s=cl&p=i&mlu=4&ilr=4",
+  "ثاني-ثالث": "https://chat.whatsapp.com/J4oLztUAmE2FSn24XG2yjf?s=cl&p=i&mlu=4&ilr=4",
+  "ثالث-أول":  "https://chat.whatsapp.com/IPcvD9Xa4Ms2fD7LG2ctgQ?s=cl&p=i&mlu=4&ilr=4",
+  "ثالث-ثاني": "https://chat.whatsapp.com/L19Go4KTPNi2nfO61esRpQ?s=cl&p=i&mlu=4&ilr=4",
+  "ثالث-ثالث": "https://chat.whatsapp.com/Ce0s7DurjtDF0oqAr2RQki?s=cl&p=i&mlu=4&ilr=4"
+};
+
+/* ============================================================
+   منطق الصفحة (لا حاجة لتعديله)
+   ============================================================ */
+const form = document.getElementById('regForm');
+const submitBtn = document.getElementById('submitBtn');
+const statusMsg = document.getElementById('statusMsg');
+
+function setError(fieldId, show){
+  const field = document.getElementById(fieldId);
+  field.classList.toggle('has-error', show);
+  const msg = field.querySelector('.error-msg');
+  if(msg) msg.classList.toggle('show', show);
+}
+
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+
+  const name = document.getElementById('studentName').value.trim();
+  const style = document.querySelector('input[name="style"]:checked');
+  const phoneRaw = document.getElementById('studentPhone').value.trim();
+  const grade = document.getElementById('gradeLevel').value;
+  const section = document.getElementById('sectionNum').value;
+
+  let valid = true;
+
+  setError('field-name', !name);
+  if(!name) valid = false;
+
+  setError('field-style', !style);
+  if(!style) valid = false;
+
+  const phoneDigits = phoneRaw.replace(/\D/g, '');
+  const phoneValid = /^[5][0-9]{8}$/.test(phoneDigits);
+  setError('field-phone', !phoneValid);
+  if(!phoneValid) valid = false;
+
+  setError('field-grade', !(grade && section));
+  if(!(grade && section)) valid = false;
+
+  if(!valid) return;
+
+  const fullPhone = "966" + phoneDigits;
+  const groupKey = grade + "-" + section;
+  const groupLink = GROUP_LINKS[groupKey];
+
+  if(!groupLink){
+    statusMsg.textContent = "تعذر تحديد مجموعة هذا الفصل، تواصلي مع المعلمة.";
+    return;
+  }
+
+  submitBtn.disabled = true;
+  statusMsg.textContent = "جاري الحفظ...";
+
+  // إرسال البيانات لجدول جوجل شيتس (بدون إعادة تحميل الصفحة)
+  const data = new FormData();
+  data.append(ENTRY_NAME, name);
+  data.append(ENTRY_STYLE, style.value);
+  data.append(ENTRY_PHONE, fullPhone);
+  data.append(ENTRY_GRADE, GRADE_LABELS[grade] || grade);
+  data.append(ENTRY_SECTION, section);
+
+  fetch(FORM_ACTION_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: data
+  }).catch(function(){
+    // نتجاهل الخطأ لأن وضع no-cors لا يسمح بقراءة الاستجابة أصلاً
+  }).finally(function(){
+    statusMsg.textContent = "تم الحفظ، جاري تحويلك للمجموعة...";
+    setTimeout(function(){
+      window.location.href = groupLink;
+    }, 600);
+  });
 });
 </script>
+</body>
+</html>
